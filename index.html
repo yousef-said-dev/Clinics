@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0c2152">
+  <meta name="description" content="الموقع الرسمي لعيادة د. أحمد محمد — استشاري طب الباطنة والجهاز الهضمي. حجز المواعيد والكشف الطبي إلكترونياً، عيادة الشفاء التخصصية.">
+  <title>عيادة د. أحمد محمد | الشفاء التخصصية - حجز المواعيد الطبية</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%230c2152'/%3E%3Cpath d='M14 34h9l5-15 8 28 6-20 4 7h8' fill='none' stroke='%231b4fc6' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  
+  <!-- Typography with local fallbacks -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&family=Cairo:wght@400;500;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Toast notification container -->
+  <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="false"></div>
+
+  <!-- Modal backdrop & container -->
+  <div id="modal-root"></div>
+
+  <!-- Main dynamic app container -->
+  <main id="app" class="app">
+    <div class="boot-splash" role="status" aria-live="polite">
+      <div class="brand-mark brand-mark--lg" aria-hidden="true">
+        <svg viewBox="0 0 64 64" fill="none">
+          <path d="M12 34h11l6-17 9 31 6-22 4 8h9" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="boot-splash__brand">عيادة د. أحمد محمد</div>
+      <p>جاري تحميل المنظومة الطبية…</p>
+      <span class="spinner spinner--green" aria-hidden="true"></span>
+    </div>
+  </main>
+
+  <noscript>
+    <div class="noscript-card" style="padding: 30px; text-align: center; background: #fff; margin: 40px auto; max-width: 500px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+      <h2 style="color: #082338; margin-bottom: 10px;">يتطلب هذا النظام تفعيل JavaScript</h2>
+      <p style="color: #7b8a99; line-height: 1.8;">يرجى تفعيل JavaScript في إعدادات متصفحك للاستفادة الكاملة من خدمات العيادة وحجز المواعيد الطبية.</p>
+    </div>
+  </noscript>
+
+  <!-- GSAP animation library + ScrollTrigger -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+
+  <!-- Application scripts (order matters: core → motion → shared UI → pages → router) -->
+  <script src="js/core.js" defer></script>
+  <script src="js/motion.js" defer></script>
+  <script src="js/modals.js" defer></script>
+  <script src="js/views-landing.js" defer></script>
+  <script src="js/views-doctor-login.js" defer></script>
+  <script src="js/views-doctor.js" defer></script>
+  <script src="js/views-patient.js" defer></script>
+  <script src="js/app.js" defer></script>
+</body>
+</html>
