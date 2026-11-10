@@ -359,7 +359,7 @@
     },
 
     /* ══════════════════════════════════════════════════════════════════════
-       CLINICAL GSAP MEDICAL CURSOR & ACOUSTIC SHOCKWAVE SYSTEM
+       CLINIC BADGE CURSOR — soft medical emblem, tap-only on phones
        ══════════════════════════════════════════════════════════════════════ */
     initMedicalCursor() {
       if (this.reduced) return;
@@ -372,8 +372,9 @@
       wrap.style.opacity = '0';
       wrap.innerHTML = `
         <div class="med-cursor-ring" id="med-cursor-ring">
+          <div class="med-cursor-halo" aria-hidden="true"></div>
           <div class="med-clinic-badge" id="med-clinic-badge" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" focusable="false">
               <path d="M9 3a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 3v5h5a1.5 1.5 0 0 1 1.5 1.5v3A1.5 1.5 0 0 1 20 14h-5v5a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 19v-5H4a1.5 1.5 0 0 1-1.5-1.5v-3A1.5 1.5 0 0 1 4 8h5V3z"/>
             </svg>
           </div>
@@ -389,6 +390,8 @@
 
       if (!ring || !dot) return;
 
+      const HOVER_SELECTOR = 'button, a, input, textarea, select, [data-cursor], .mont-doctor-img, .mont-doctor-frame, .mont-bento-card, .mont-review-card, .mont-journey-step, .mont-faq-trigger, .mont-metric-item';
+
       let targetX = -100;
       let targetY = -100;
       let ringX = -100;
@@ -399,12 +402,14 @@
       let currentHoverTarget = null;
       let isInsideWindow = false;
       let mobileHideTimeout = null;
+      let touchState = null;
+      let lastTouchAt = 0;
 
       const isFinePointer = () => {
         return window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
       };
 
-      // Ultrasound Acoustic Click Shockwave
+      // Ultrasound acoustic click ripple
       const triggerShockwave = (x, y) => {
         const ripple = document.createElement('div');
         ripple.className = 'med-cursor-shockwave';
@@ -428,18 +433,94 @@
         }
       };
 
-      // Mobile Touch Tap handler: shows cursor at tap point and auto disappears after a moment (phones only)
-      const handleMobileTap = (clientX, clientY) => {
-        targetX = clientX;
-        targetY = clientY;
-        ringX = clientX;
-        ringY = clientY;
+      const clearLabel = () => {
+        if (!label) return;
+        label.textContent = '';
+        label.style.opacity = '0';
+        label.style.transform = 'scale(0.7)';
+      };
+
+      // Single source of truth for what the tapped/hovered element means
+      const resolveTarget = (element) => {
+        if (!element || !element.closest) return { label: '', scale: 1, isInput: false };
+        const target = element.closest(HOVER_SELECTOR);
+        if (!target) return { label: '', scale: 1, isInput: false };
+
+        const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName);
+        if (isInput) return { label: '', scale: 0.55, isInput: true };
+
+        let labelText = target.getAttribute('data-cursor') || '';
+        let scale = 0.86;
+
+        if (!labelText) {
+          if (target.closest('#mont-cta-consultation, #mont-nav-consultation, #mobile-nav-consultation, #mont-hero-consultation, .mont-btn-primary, .mont-btn-reserve')) {
+            labelText = 'احجز الآن';
+            scale = 0.8;
+          } else if (target.closest('.mont-doctor-frame, .mont-doctor-img')) {
+            labelText = 'د. أحمد';
+            scale = 0.8;
+          } else if (target.closest('.mont-review-card')) {
+            labelText = 'رأي موثق ★';
+            scale = 0.86;
+          } else if (target.closest('.mont-bento-card')) {
+            labelText = 'فحص سريري';
+            scale = 0.88;
+          } else if (target.closest('.mont-journey-step')) {
+            labelText = 'خطوة الكشف';
+            scale = 0.88;
+          } else if (target.closest('.mont-faq-trigger')) {
+            labelText = 'استفسار';
+            scale = 0.88;
+          } else if (target.closest('.mont-metric-item')) {
+            labelText = 'إحصائية';
+            scale = 0.88;
+          }
+        }
+
+        return { label: labelText, scale, isInput: false, target };
+      };
+
+      // Apply resolved target state (label always reset when there is nothing meaningful)
+      const applyTarget = (element) => {
+        const info = resolveTarget(element);
+        targetScale = info.scale;
+        ring.classList.toggle('is-input', info.isInput);
+        ring.classList.toggle('is-hover', !!info.target && !info.isInput);
+
+        if (!label) return info;
+        if (info.label) {
+          label.textContent = info.label;
+          label.style.opacity = '1';
+          label.style.transform = 'scale(1)';
+        } else {
+          clearLabel();
+        }
+        return info;
+      };
+
+      // Flip the label above the badge near the bottom edge of the screen
+      const updateLabelSide = (y) => {
+        ring.classList.toggle('is-low', y > window.innerHeight - 96);
+      };
+
+      const placeAt = (x, y) => {
+        targetX = x;
+        targetY = y;
+        ringX = x;
+        ringY = y;
         isInsideWindow = true;
 
-        dot.style.transform = `translate3d(${clientX}px, ${clientY}px, 0) translate(-50%, -50%)`;
-        ring.style.transform = `translate3d(${clientX}px, ${clientY}px, 0) translate(-50%, -50%) scale(1.15)`;
+        dot.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+        ring.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%) scale(${ringScale})`;
+        updateLabelSide(y);
+      };
 
-        wrap.style.transition = 'opacity 0.15s ease';
+      // Mobile: show only after a real tap, then fade away on its own
+      const handleMobileTap = (clientX, clientY) => {
+        placeAt(clientX, clientY);
+        applyTarget(document.elementFromPoint(clientX, clientY));
+
+        wrap.style.transition = 'opacity 0.12s ease';
         wrap.style.opacity = '1';
         isVisible = true;
 
@@ -447,38 +528,43 @@
 
         if (mobileHideTimeout) clearTimeout(mobileHideTimeout);
         mobileHideTimeout = setTimeout(() => {
-          wrap.style.transition = 'opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1)';
+          wrap.style.transition = 'opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
           wrap.style.opacity = '0';
           isVisible = false;
-        }, 750);
+          targetScale = 1;
+          ringScale = 1;
+          ring.classList.remove('is-input', 'is-hover');
+          clearLabel();
+          currentHoverTarget = null;
+          mobileHideTimeout = null;
+        }, 850);
       };
 
-      // Unbreakable RAF render loop (100% immune to GSAP timeline kills or router resets)
+      // Unbreakable RAF render loop (immune to GSAP timeline kills or router resets)
       function renderCursorLoop() {
-        if (isInsideWindow && targetX >= 0 && targetY >= 0) {
-          // Smooth fluid trailing physics for the stethoscope ring
-          ringX += (targetX - ringX) * 0.25;
-          ringY += (targetY - ringY) * 0.25;
+        if (isVisible && isInsideWindow && targetX >= 0 && targetY >= 0) {
+          // Soft trailing physics for the badge
+          ringX += (targetX - ringX) * 0.42;
+          ringY += (targetY - ringY) * 0.42;
           ringScale += (targetScale - ringScale) * 0.2;
 
           ring.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%) scale(${ringScale})`;
+          // Keep the label readable: never enlarge it as the badge shrinks
+          if (label) label.style.scale = String(Math.min(1, 1 / (ringScale || 1)));
         }
         requestAnimationFrame(renderCursorLoop);
       }
       requestAnimationFrame(renderCursorLoop);
 
-      // Instant hardware-rate pointer tracking
+      // Desktop pointer tracking (touch movement is ignored entirely)
       const onPointerMove = (e) => {
-        if (e.pointerType === 'touch') {
-          handleMobileTap(e.clientX, e.clientY);
-          return;
-        }
+        if (e.pointerType === 'touch') return;
 
         targetX = e.clientX;
         targetY = e.clientY;
         isInsideWindow = true;
+        updateLabelSide(targetY);
 
-        // Position the central precision dot synchronously with zero lag
         dot.style.transform = `translate3d(${targetX}px, ${targetY}px, 0) translate(-50%, -50%)`;
 
         if (!isVisible) {
@@ -488,98 +574,86 @@
           if (isFinePointer()) {
             document.body.classList.add('has-custom-cursor');
           }
-          // Start ring directly at mouse position so it never jumps from (0,0)
+          // Start ring at the pointer so it never jumps from (0,0)
           ringX = targetX;
           ringY = targetY;
           ring.style.transform = `translate3d(${ringX}px, ${ringY}px, 0) translate(-50%, -50%) scale(${ringScale})`;
         }
 
-        // Contextual medical hover detection
-        const target = e.target.closest(
-          'button, a, input, textarea, select, [data-cursor], .mont-doctor-img, .mont-doctor-frame, .mont-bento-card, .mont-review-card, .mont-journey-step, .mont-faq-trigger, .mont-metric-item'
-        );
-
+        const target = e.target && e.target.closest ? e.target.closest(HOVER_SELECTOR) : null;
         if (target !== currentHoverTarget) {
           currentHoverTarget = target;
-          if (target) {
-            let labelText = target.getAttribute('data-cursor') || '';
-            const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName);
-
-            if (isInput) {
-              targetScale = 0.5;
-              labelText = '';
-              ring.classList.add('is-input');
-            } else {
-              ring.classList.remove('is-input');
-              targetScale = 1.45;
-              if (!labelText) {
-                if (target.closest('#mont-cta-consultation, #mont-nav-consultation, #mobile-nav-consultation, #mont-hero-consultation, .mont-btn-primary, .mont-btn-reserve')) {
-                  labelText = 'احجز الآن';
-                  targetScale = 1.7;
-                } else if (target.closest('.mont-doctor-frame, .mont-doctor-img')) {
-                  labelText = 'د. أحمد';
-                  targetScale = 1.9;
-                } else if (target.closest('.mont-review-card')) {
-                  labelText = 'رأي موثق ★';
-                  targetScale = 1.4;
-                } else if (target.closest('.mont-bento-card')) {
-                  labelText = 'فحص سريري';
-                  targetScale = 1.35;
-                } else if (target.closest('.mont-journey-step')) {
-                  labelText = 'خطوة الكشف';
-                  targetScale = 1.3;
-                } else if (target.closest('.mont-faq-trigger')) {
-                  labelText = 'استفسار';
-                  targetScale = 1.3;
-                } else if (target.closest('.mont-metric-item')) {
-                  labelText = 'إحصائية';
-                  targetScale = 1.3;
-                }
-              }
-            }
-
-            if (label) {
-              if (labelText) {
-                label.textContent = labelText;
-                label.style.opacity = '1';
-                label.style.transform = 'scale(1)';
-              } else {
-                label.style.opacity = '0';
-                label.style.transform = 'scale(0.7)';
-              }
-            }
-          } else {
-            // Revert to normal
-            targetScale = 1;
-            ring.classList.remove('is-input');
-            if (label) {
-              label.style.opacity = '0';
-              label.style.transform = 'scale(0.7)';
-            }
-          }
+          applyTarget(target);
         }
       };
 
       window.addEventListener('pointermove', onPointerMove, { passive: true });
-      window.addEventListener('mousemove', onPointerMove, { passive: true });
 
-      // Mobile Touch Listeners (phones only: auto-disappear after a moment)
-      window.addEventListener('touchstart', (e) => {
-        if (e.touches && e.touches[0]) {
-          handleMobileTap(e.touches[0].clientX, e.touches[0].clientY);
+      // ── Phones: a tap shows the badge briefly; scrolling never shows it ──
+      const TAP_MOVE_LIMIT = 12;
+      const TAP_TIME_LIMIT = 650;
+
+      const cancelMobileCursor = () => {
+        if (mobileHideTimeout) {
+          clearTimeout(mobileHideTimeout);
+          mobileHideTimeout = null;
         }
-      }, { passive: true });
+        if (isVisible) {
+          wrap.style.transition = 'opacity 0.15s ease';
+          wrap.style.opacity = '0';
+          isVisible = false;
+          targetScale = 1;
+          ringScale = 1;
+          ring.classList.remove('is-input', 'is-hover');
+          clearLabel();
+          currentHoverTarget = null;
+        }
+      };
 
       window.addEventListener('pointerdown', (e) => {
-        if (e.pointerType === 'touch') {
-          handleMobileTap(e.clientX, e.clientY);
+        if (e.pointerType !== 'touch') return;
+        lastTouchAt = Date.now();
+        touchState = { x: e.clientX, y: e.clientY, time: lastTouchAt, moved: false };
+      }, { passive: true });
+
+      window.addEventListener('pointermove', (e) => {
+        if (e.pointerType !== 'touch' || !touchState) return;
+        if (Math.abs(e.clientX - touchState.x) > TAP_MOVE_LIMIT || Math.abs(e.clientY - touchState.y) > TAP_MOVE_LIMIT) {
+          touchState.moved = true;
+          cancelMobileCursor();
         }
       }, { passive: true });
+
+      window.addEventListener('touchmove', () => {
+        if (touchState) touchState.moved = true;
+        cancelMobileCursor();
+      }, { passive: true });
+
+      window.addEventListener('pointerup', (e) => {
+        if (e.pointerType !== 'touch') return;
+        const state = touchState;
+        touchState = null;
+        if (!state || state.moved) return;
+        if (Date.now() - state.time > TAP_TIME_LIMIT) return;
+        handleMobileTap(e.clientX, e.clientY);
+      }, { passive: true });
+
+      window.addEventListener('pointercancel', () => { touchState = null; }, { passive: true });
+
+      // Safety nets: any scroll or page change immediately dismisses the touch badge
+      window.addEventListener('scroll', () => {
+        if (!isFinePointer()) cancelMobileCursor();
+      }, { passive: true });
+
+      window.addEventListener('hashchange', () => {
+        if (!isFinePointer()) cancelMobileCursor();
+      });
 
       window.addEventListener('mouseleave', () => {
         isInsideWindow = false;
         isVisible = false;
         wrap.style.opacity = '0';
+        clearLabel();
         document.body.classList.remove('has-custom-cursor');
       });
 
@@ -595,12 +669,15 @@
         document.body.classList.add('has-custom-cursor');
       });
 
-      // Desktop Click Shockwave
+      // Desktop click ripple (ignored right after a touch tap on hybrid devices)
       window.addEventListener('click', (e) => {
         if (!isFinePointer()) return;
+        if (Date.now() - lastTouchAt < 700) return;
 
         targetScale = 0.85;
-        setTimeout(() => { targetScale = currentHoverTarget ? 1.45 : 1; }, 130);
+        setTimeout(() => {
+          targetScale = currentHoverTarget ? resolveTarget(currentHoverTarget).scale : 1;
+        }, 130);
         triggerShockwave(e.clientX, e.clientY);
       });
     }

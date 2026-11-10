@@ -80,7 +80,7 @@
               <div class="sidebar-help">
                 <div class="sidebar-help__head">${Icons.sparkles} بوابة المرضى جاهزة</div>
                 <p>يمكنك فتح بوابة المرضى وتجربة الحجز كـ مريض في أي وقت.</p>
-                <button class="btn btn--sm btn--outline" id="sidebar-open-patient" style="width: 100%; margin-top: 8px; font-size: 10px; border-color: rgba(255,255,255,0.2); color: #fff;">
+                <button class="btn btn--sm btn--outline-light" id="sidebar-open-patient" style="width: 100%; margin-top: 8px; font-size: 10px; border-color: rgba(255,255,255,0.2);">
                   ${Icons.arrowLeft} تجربة حجز موعد
                 </button>
               </div>
@@ -215,7 +215,7 @@
             <div style="margin-top: 2px; font-size: 11px; color: rgba(255,255,255,0.7); display: flex; align-items: center; gap: 4px;">
               ${Icons.phone} ${stats.nextAppointment.patientPhone}
             </div>
-            <button class="btn btn--sm btn--outline view-booking-btn" data-id="${stats.nextAppointment.id}" style="margin-top: 15px; width: 100%; border-color: rgba(255,255,255,0.25); color: #fff;">
+            <button class="btn btn--sm btn--outline-light view-booking-btn" data-id="${stats.nextAppointment.id}" style="margin-top: 15px; width: 100%; border-color: rgba(255,255,255,0.25);">
               عرض ملف الحجز
             </button>
           </div>
@@ -228,7 +228,7 @@
             <p style="margin-top: 6px; font-size: 11px; color: rgba(255,255,255,0.7);">
               يمكنك الاطلاع على الجدول الأسبوعي أو إضافة جلسات عمل إضافية.
             </p>
-            <button class="btn btn--sm btn--outline" id="overview-go-schedule" style="margin-top: 15px; width: 100%; border-color: rgba(255,255,255,0.25); color: #fff;">
+            <button class="btn btn--sm btn--outline-light" id="overview-go-schedule" style="margin-top: 15px; width: 100%; border-color: rgba(255,255,255,0.25);">
               الانتقال للجدول
             </button>
           </div>

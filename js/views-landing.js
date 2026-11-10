@@ -768,7 +768,7 @@
       });
 
       window.addEventListener('resize', () => {
-        if (window.innerWidth > 860 && navMobile?.classList.contains('is-open')) {
+        if (window.innerWidth > 991 && navMobile?.classList.contains('is-open')) {
           closeMobileMenu();
         }
       });

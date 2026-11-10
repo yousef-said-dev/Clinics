@@ -362,6 +362,20 @@ ul, ol {
   --btn-border: #c3d0d8;
 }
 
+/* Outline button on dark surfaces (doctor sidebar / next-appointment card) */
+.btn--outline-light {
+  --btn-bg: transparent;
+  --btn-color: #ffffff;
+  --btn-border: rgba(255, 255, 255, 0.28);
+  box-shadow: none;
+}
+
+.btn--outline-light:hover:not(:disabled) {
+  --btn-bg: rgba(255, 255, 255, 0.16);
+  --btn-color: #ffffff;
+  --btn-border: rgba(255, 255, 255, 0.48);
+}
+
 .btn--white {
   --btn-bg: var(--white);
   --btn-color: var(--navy-900);
@@ -4719,6 +4733,13 @@ textarea:focus {
 .booking-date.is-selected .booking-date__num { color: #fff; }
 .booking-date.is-selected .booking-date__slots { color: #7ee3cb; }
 
+.booking-date.is-selected:hover:not(:disabled),
+.booking-date.is-selected:focus-visible:not(:disabled) {
+  background: var(--navy-900);
+  border-color: var(--navy-900);
+  transform: translateY(-1px);
+}
+
 .booking-date:disabled {
   opacity: .43;
   background: #f7f9fa;
@@ -8691,42 +8712,76 @@ body.is-landing-active {
   transition: opacity 0.2s ease;
 }
 
+/* True pointer anchor is invisible; the clinic badge is the visual cursor */
 .med-cursor-dot {
   position: fixed;
   top: 0;
   left: 0;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #0ea5e9;
+  width: 0;
+  height: 0;
+  opacity: 0;
   pointer-events: none !important;
-  box-shadow: 0 0 10px rgba(14, 165, 233, 0.9), 0 0 18px rgba(27, 79, 198, 0.6);
   will-change: transform;
   transform: translate3d(-100px, -100px, 0);
 }
 
+/* Rounded clinic badge (like a medical app icon) instead of a crosshair ring */
 .med-cursor-ring {
   position: fixed;
   top: 0;
   left: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(27, 79, 198, 0.55);
-  background: radial-gradient(circle, rgba(14, 165, 233, 0.12) 0%, rgba(27, 79, 198, 0.04) 75%, transparent 100%);
-  box-shadow: 0 0 14px rgba(14, 165, 233, 0.25), inset 0 0 8px rgba(27, 79, 198, 0.08);
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: linear-gradient(155deg, #ffffff 0%, #eaf2ff 100%);
+  border: 1.5px solid rgba(27, 79, 198, 0.42);
+  box-shadow:
+    0 8px 20px rgba(12, 33, 82, 0.24),
+    0 0 0 3px rgba(255, 255, 255, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
   pointer-events: none !important;
   display: flex;
   align-items: center;
   justify-content: center;
   will-change: transform;
   transform: translate3d(-100px, -100px, 0);
-  transition: border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+  transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
 }
 
-/* Clinical Medical Cross Emblem */
-.med-clinic-badge {
+/* Soft breathing clinical glow (no hard ring / no crosshair) */
+.med-cursor-halo {
   position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(14, 165, 233, 0) 0%,
+    rgba(14, 165, 233, 0) 34%,
+    rgba(14, 165, 233, 0.22) 52%,
+    rgba(27, 79, 198, 0.08) 66%,
+    rgba(27, 79, 198, 0) 78%);
+  filter: blur(1px);
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  pointer-events: none !important;
+  animation: medHaloBreathe 3s ease-in-out infinite;
+}
+
+@keyframes medHaloBreathe {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(0.9);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.08);
+    opacity: 1;
+  }
+}
+
+/* Medical cross emblem */
+.med-clinic-badge {
   width: 16px;
   height: 16px;
   display: flex;
@@ -8735,38 +8790,64 @@ body.is-landing-active {
   color: #1b4fc6;
   pointer-events: none !important;
   transition: transform 0.25s ease, opacity 0.25s ease, color 0.25s ease;
-  animation: medClinicPulse 2.4s ease-in-out infinite;
 }
 
-@keyframes medClinicPulse {
-  0%, 100% {
-    transform: scale(0.95);
-    opacity: 0.8;
-  }
-  50% {
-    transform: scale(1.14);
-    opacity: 1;
-    color: #0284c7;
-  }
+.med-clinic-badge svg {
+  display: block;
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.85));
 }
 
+.med-cursor-ring.is-hover {
+  border-color: rgba(14, 165, 233, 0.75);
+  box-shadow:
+    0 10px 26px rgba(12, 33, 82, 0.28),
+    0 0 0 4px rgba(14, 165, 233, 0.12),
+    0 0 22px rgba(14, 165, 233, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+.med-cursor-ring.is-hover .med-clinic-badge {
+  color: #0284c7;
+}
+
+.med-cursor-ring.is-hover .med-cursor-halo {
+  animation-duration: 1.6s;
+}
+
+/* Inputs: slim clinical caret instead of the badge */
 .med-cursor-ring.is-input {
-  border-style: dashed;
-  border-color: #64748b;
-  background: transparent;
-  box-shadow: none;
-}
-.med-cursor-ring.is-input .med-clinic-badge {
-  display: none;
+  background: linear-gradient(155deg, #ffffff 0%, #f1f5f9 100%);
+  border-color: rgba(100, 116, 139, 0.5);
+  box-shadow: 0 6px 16px rgba(12, 33, 82, 0.16);
 }
 
-/* Dynamic medical contextual label inside/beside cursor */
+.med-cursor-ring.is-input .med-clinic-badge {
+  opacity: 0;
+  transform: scale(0.4);
+}
+
+.med-cursor-ring.is-input .med-cursor-halo {
+  opacity: 0.25;
+  animation: none;
+}
+
+.med-cursor-ring.is-input::after {
+  content: '';
+  width: 2px;
+  height: 14px;
+  border-radius: 1px;
+  background: #1b4fc6;
+}
+
+/* Contextual label that always follows the badge */
 .med-cursor-label {
   position: absolute;
-  bottom: -28px;
-  background: #0c2152;
+  top: calc(100% + 16px);
+  left: 50%;
+  translate: -50% 0;
+  background: linear-gradient(135deg, #0c2152 0%, #1b4fc6 100%);
   color: #ffffff;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
   padding: 3px 9px;
   border-radius: 999px;
@@ -8775,22 +8856,30 @@ body.is-landing-active {
   opacity: 0;
   transform: scale(0.7);
   transform-origin: top center;
-  box-shadow: 0 4px 14px rgba(12, 33, 82, 0.25);
-  letter-spacing: 0.3px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 6px 18px rgba(12, 33, 82, 0.3);
+  letter-spacing: 0.2px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
-/* Ultrasound Acoustic Click Shockwave */
+.med-cursor-ring.is-low .med-cursor-label {
+  top: auto;
+  bottom: calc(100% + 16px);
+  transform-origin: bottom center;
+}
+
+/* Ultrasound acoustic click ripple */
 .med-cursor-shockwave {
   position: fixed;
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  border: 2px solid #0ea5e9;
+  border: 2px solid rgba(14, 165, 233, 0.9);
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.14), transparent 70%);
   transform: translate(-50%, -50%);
   pointer-events: none !important;
   z-index: 999998;
-  box-shadow: 0 0 16px rgba(14, 165, 233, 0.5);
+  box-shadow: 0 0 18px rgba(14, 165, 233, 0.45), inset 0 0 12px rgba(14, 165, 233, 0.25);
 }
 
 /* ── Live Clinical Status Ticker ── */
@@ -8988,4 +9077,154 @@ body.is-landing-active {
 .mont-seal-svg {
   width: 100%;
   height: 100%;
+}
+
+/* ==========================================================================
+   FLOATING DEMO SWITCHER — responsive at every screen size
+   ========================================================================== */
+#demo-quick-switcher {
+  position: fixed;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  left: max(14px, env(safe-area-inset-left, 0px));
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px;
+  max-width: calc(100vw - 28px);
+  box-sizing: border-box;
+  background: rgba(6, 24, 38, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  font-family: inherit;
+  font-size: 11px;
+}
+
+#demo-quick-switcher .demo-sw-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+#demo-quick-switcher .demo-sw-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+#demo-quick-switcher .demo-sw-btn:active {
+  transform: scale(0.94);
+}
+
+#demo-quick-switcher .demo-sw-btn:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+#demo-quick-switcher #sw-patient {
+  color: #93c5fd;
+  background: rgba(27, 79, 198, 0.28);
+}
+
+#demo-quick-switcher .demo-sw-btn--reset {
+  color: #f59e0b;
+  padding: 0 9px;
+}
+
+#demo-quick-switcher .demo-sw-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+}
+
+#demo-quick-switcher .demo-sw-icon .icon,
+#demo-quick-switcher .demo-sw-icon svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+#demo-quick-switcher .demo-sw-label {
+  display: inline-block;
+}
+
+@media (max-width: 560px) {
+  #demo-quick-switcher {
+    gap: 8px;
+    padding: 7px;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    left: max(12px, env(safe-area-inset-left, 0px));
+    border-radius: 22px;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.36);
+  }
+  #demo-quick-switcher .demo-sw-btn {
+    min-width: 52px;
+    min-height: 52px;
+    padding: 0 12px;
+    gap: 0;
+    border-radius: 16px;
+  }
+  #demo-quick-switcher .demo-sw-label {
+    display: none;
+  }
+  #demo-quick-switcher .demo-sw-icon,
+  #demo-quick-switcher .demo-sw-icon .icon,
+  #demo-quick-switcher .demo-sw-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+  #demo-quick-switcher .demo-sw-btn--reset {
+    padding: 0 12px;
+    min-width: 52px;
+  }
+}
+
+@media (max-width: 380px) {
+  #demo-quick-switcher {
+    gap: 6px;
+    padding: 6px;
+  }
+  #demo-quick-switcher .demo-sw-btn {
+    min-width: 46px;
+    min-height: 46px;
+    padding: 0 10px;
+  }
+  #demo-quick-switcher .demo-sw-btn--reset {
+    min-width: 46px;
+    padding: 0 10px;
+  }
+  #demo-quick-switcher .demo-sw-icon,
+  #demo-quick-switcher .demo-sw-icon .icon,
+  #demo-quick-switcher .demo-sw-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* Phones ≤412px: switcher spans ~90% of the viewport width */
+@media (max-width: 412px) {
+  #demo-quick-switcher {
+    left: 50%;
+    translate: -50% 0;
+    width: 90vw;
+    max-width: 90vw;
+    justify-content: space-between;
+  }
 }

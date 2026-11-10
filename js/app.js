@@ -149,36 +149,24 @@
 
       const switcher = document.createElement('div');
       switcher.id = 'demo-quick-switcher';
-      switcher.style.cssText = `
-        position: fixed;
-        bottom: 18px;
-        left: 18px;
-        z-index: 99;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        padding: 5px 8px;
-        background: rgba(6, 24, 38, 0.94);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 99px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
-        backdrop-filter: blur(10px);
-        font-family: inherit;
-        font-size: 11px;
-      `;
+      switcher.setAttribute('role', 'navigation');
+      switcher.setAttribute('aria-label', 'التنقل السريع بين صفحات العرض');
 
       switcher.innerHTML = `
-        <button id="sw-landing" class="btn btn--sm" style="padding: 4px 9px; min-height: 28px; border-radius: 99px; color: #fff; background: transparent; border: 0;" title="الرئيسية">
-          ${Icons.home} <span style="margin-right: 4px;">الرئيسية</span>
+        <button type="button" id="sw-landing" class="demo-sw-btn" title="الرئيسية" aria-label="الرئيسية" data-cursor="الرئيسية">
+          <span class="demo-sw-icon">${Icons.home}</span>
+          <span class="demo-sw-label">الرئيسية</span>
         </button>
-        <button id="sw-patient" class="btn btn--sm" style="padding: 4px 9px; min-height: 28px; border-radius: 99px; color: #93c5fd; background: rgba(27, 79, 198, 0.22); border: 0;" title="بوابة حجز المرضى">
-          ${Icons.calendar} <span style="margin-right: 4px;">حجز المرضى</span>
+        <button type="button" id="sw-patient" class="demo-sw-btn" title="بوابة حجز المرضى" aria-label="بوابة حجز المرضى" data-cursor="حجز المرضى">
+          <span class="demo-sw-icon">${Icons.calendar}</span>
+          <span class="demo-sw-label">حجز المرضى</span>
         </button>
-        <button id="sw-doctor" class="btn btn--sm" style="padding: 4px 9px; min-height: 28px; border-radius: 99px; color: #fff; background: transparent; border: 0;" title="لوحة الطبيب">
-          ${Icons.stethoscope} <span style="margin-right: 4px;">لوحة الطبيب</span>
+        <button type="button" id="sw-doctor" class="demo-sw-btn" title="لوحة الطبيب" aria-label="لوحة الطبيب" data-cursor="لوحة الطبيب">
+          <span class="demo-sw-icon">${Icons.stethoscope}</span>
+          <span class="demo-sw-label">لوحة الطبيب</span>
         </button>
-        <button id="sw-reset" class="btn btn--sm" style="padding: 4px 7px; min-height: 28px; border-radius: 99px; color: #f59e0b; background: transparent; border: 0;" title="إعادة ضبط البيانات التجريبية">
-          ${Icons.refresh}
+        <button type="button" id="sw-reset" class="demo-sw-btn demo-sw-btn--reset" title="إعادة ضبط البيانات التجريبية" aria-label="إعادة ضبط البيانات التجريبية" data-cursor="إعادة الضبط">
+          <span class="demo-sw-icon">${Icons.refresh}</span>
         </button>
       `;
 
