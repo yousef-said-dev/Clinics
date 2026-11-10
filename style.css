@@ -6884,13 +6884,27 @@ body .modal-backdrop:has(.modal--gsap) {
 }
 
 .mont-nav-icon {
-  font-size: 18px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   flex-shrink: 0;
+  border-radius: 9px;
+  background: rgba(27, 79, 198, 0.07);
+  color: #1b4fc6;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.mont-nav-icon svg {
+  width: 17px;
+  height: 17px;
+  display: block;
+}
+
+.mont-nav-mobile-link:hover .mont-nav-icon,
+.mont-nav-mobile-link:active .mont-nav-icon {
+  background: rgba(27, 79, 198, 0.13);
 }
 
 .mont-nav-mobile-cta {

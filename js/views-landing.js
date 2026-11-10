@@ -51,25 +51,44 @@
                 <ul class="mont-nav-mobile-links">
                   <li>
                     <button type="button" class="mont-nav-mobile-link" id="mobile-link-about">
-                      <span class="mont-nav-icon">🏥</span>
+                      <span class="mont-nav-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                          <circle cx="12" cy="8" r="3.6"/>
+                          <path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/>
+                        </svg>
+                      </span>
                       <span>عن الدكتور والخدمات</span>
                     </button>
                   </li>
                   <li>
                     <button type="button" class="mont-nav-mobile-link" id="mobile-link-testimonials">
-                      <span class="mont-nav-icon">⭐</span>
+                      <span class="mont-nav-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M12 3.6l2.55 5.17 5.7.83-4.12 4.02.97 5.68L12 16.62 6.9 19.3l.97-5.68-4.12-4.02 5.7-.83z"/>
+                        </svg>
+                      </span>
                       <span>آراء المرضى والتقييمات</span>
                     </button>
                   </li>
                   <li>
                     <button type="button" class="mont-nav-mobile-link" id="mobile-link-contact">
-                      <span class="mont-nav-icon">📍</span>
+                      <span class="mont-nav-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M19.5 10.2c0 5.2-7.5 10.3-7.5 10.3S4.5 15.4 4.5 10.2a7.5 7.5 0 0 1 15 0z"/>
+                          <circle cx="12" cy="10" r="2.5"/>
+                        </svg>
+                      </span>
                       <span>اتصل بنا والموقع</span>
                     </button>
                   </li>
                   <li>
                     <button type="button" class="mont-nav-mobile-link" id="mobile-link-doctor">
-                      <span class="mont-nav-icon">👨‍⚕️</span>
+                      <span class="mont-nav-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="3.5" y="4.5" width="17" height="15" rx="3"/>
+                          <path d="M12 9v6M9 12h6"/>
+                        </svg>
+                      </span>
                       <span>بوابة دخول الطبيب</span>
                     </button>
                   </li>
