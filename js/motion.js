@@ -450,30 +450,30 @@
         if (isInput) return { label: '', scale: 0.55, isInput: true };
 
         let labelText = target.getAttribute('data-cursor') || '';
-        let scale = 0.86;
+        let scale = 1.15;
 
         if (!labelText) {
           if (target.closest('#mont-cta-consultation, #mont-nav-consultation, #mobile-nav-consultation, #mont-hero-consultation, .mont-btn-primary, .mont-btn-reserve')) {
             labelText = 'احجز الآن';
-            scale = 0.8;
+            scale = 1.2;
           } else if (target.closest('.mont-doctor-frame, .mont-doctor-img')) {
             labelText = 'د. أحمد';
-            scale = 0.8;
+            scale = 1.25;
           } else if (target.closest('.mont-review-card')) {
             labelText = 'رأي موثق ★';
-            scale = 0.86;
+            scale = 1.14;
           } else if (target.closest('.mont-bento-card')) {
             labelText = 'فحص سريري';
-            scale = 0.88;
+            scale = 1.12;
           } else if (target.closest('.mont-journey-step')) {
             labelText = 'خطوة الكشف';
-            scale = 0.88;
+            scale = 1.1;
           } else if (target.closest('.mont-faq-trigger')) {
             labelText = 'استفسار';
-            scale = 0.88;
+            scale = 1.1;
           } else if (target.closest('.mont-metric-item')) {
             labelText = 'إحصائية';
-            scale = 0.88;
+            scale = 1.1;
           }
         }
 
